@@ -1,0 +1,44 @@
+.message-container {
+  height: 800px; 
+  overflow-y: auto; /* Включаем вертикальную прокрутку */
+  overflow-x:hidden; 
+  background-color: #f2f8f6; 
+  padding: 10px; 
+  margin-left: 280px;
+  border-radius: 10px;
+  width: 80%;
+}
+
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+ 
+}
+
+.message {
+  background-color: #fff; 
+  border: 1px solid #ddd; 
+  border-radius: 5px; 
+  padding: 10px; 
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.author {
+  font-weight: bold;
+}
+
+.timestamp {
+  color: #666;
+}
+
+.message-text {
+  color: #333;
+  word-break: break-all; /* Разбивает длинные слова */
+  
+}

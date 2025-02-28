@@ -1,0 +1,18 @@
+
+<div  *ngIf="username !== null && username !== ''" class="sidebar"> 
+ 
+  <button class="button-1" (click)="resetUsername()">Выйти</button>
+  <button class="button-2" (click)="clearMessages()">Очистить чат</button>
+</div>
+<!-- Показываем форму ввода имени, если username не установлен -->
+<app-username *ngIf="username === null || username === ''" (usernameSet)="onUsernameSet($event)"></app-username>
+<div class="page">
+<!-- Показываем список сообщений и форму отправки, если username установлен -->
+<div *ngIf="username !== null && username !== ''">
+  <app-message-list class="list" [messages]="messages"></app-message-list>
+  <div class="main">
+  <app-message-form class="form" (messageSent)="onMessageSent($event)"></app-message-form>
+  
+  </div>
+</div>
+</div>

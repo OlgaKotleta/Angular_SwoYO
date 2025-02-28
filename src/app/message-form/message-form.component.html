@@ -1,0 +1,9 @@
+<div class="message-form">
+    <input
+      type="text"
+      [(ngModel)]="messageText"
+      (keyup.enter)="sendMessage()"
+      placeholder="Введите сообщение..."
+    />
+    <button class="button-1" (click)="sendMessage()"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDciIGhlaWdodD0iMjIiIHZpZXdCb3g9IjAgMCA0NyAyMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMCAwSDI5Ljk0MDdMNDcgMTEuODkxOUwyOS45NDA3IDIySDBMMjEuNTg1MiAxMS44OTE5TDAgMFoiIGZpbGw9IiM3Mjg5ODEiLz4KPC9zdmc+" alt=""></button>
+  </div>
