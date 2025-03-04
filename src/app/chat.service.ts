@@ -1,5 +1,5 @@
-import { Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 export interface Message {
   author: string;
@@ -11,40 +11,38 @@ export interface Message {
   providedIn: 'root'
 })
 export class ChatService {
-  private messagesSubject = new BehaviorSubject<Message[]>([]);
+  private messages: Message[] = []; 
+  private messagesSubject = new Subject<Message[]>(); 
   messages$ = this.messagesSubject.asObservable();
 
-  private usernameSubject = new BehaviorSubject<string | null>(null);
+  private username: string | null = null; 
+  private usernameSubject = new Subject<string | null>(); 
   username$ = this.usernameSubject.asObservable();
 
   private broadcastChannel = new BroadcastChannel('chat_channel'); // Создаем канал
 
-  constructor(private ngZone: NgZone) { 
+  constructor() {
     this.loadMessages();
     this.loadUsername();
 
     // Подписываемся на сообщения из других вкладок
     this.broadcastChannel.onmessage = (event) => {
-      this.ngZone.run(() => { 
-        if (event.data.type === 'message') {
-          const messages = this.messagesSubject.value;
-          const updatedMessages = [...messages, event.data.payload]; 
-          this.messagesSubject.next(updatedMessages); 
-          this.saveMessages();
-        }
-      });
+      if (event.data.type === 'message') {
+        this.messages = [...this.messages, event.data.payload]; 
+        this.messagesSubject.next(this.messages); 
+        this.saveMessages();
+      }
     };
   }
 
   addMessage(text: string) {
-    const messages = this.messagesSubject.value;
     const newMessage: Message = {
-      author: this.usernameSubject.value || 'Anonymous',
+      author: this.username || 'Anonymous',
       timestamp: new Date(),
       text: text
     };
-    const updatedMessages = [...messages, newMessage]; 
-    this.messagesSubject.next(updatedMessages); 
+    this.messages = [...this.messages, newMessage]; 
+    this.messagesSubject.next(this.messages); 
     this.saveMessages();
 
     // Отправляем сообщение в другие вкладки
@@ -55,37 +53,44 @@ export class ChatService {
   }
 
   setUsername(username: string) {
-    this.usernameSubject.next(username);
+    this.username = username; 
+    this.usernameSubject.next(username); 
     localStorage.setItem('username', username); 
   }
 
   resetUsername() {
+    this.username = null;
+    this.usernameSubject.next(null); 
     localStorage.removeItem('username');
-    this.usernameSubject.next(null);
   }
 
   private saveMessages() {
-    localStorage.setItem('messages', JSON.stringify(this.messagesSubject.value)); 
+    localStorage.setItem('messages', JSON.stringify(this.messages)); 
   }
 
   private loadMessages() {
     const messages = localStorage.getItem('messages');
     if (messages) {
-      this.messagesSubject.next(JSON.parse(messages));
+      this.messages = JSON.parse(messages);
+      this.messagesSubject.next(this.messages); 
     }
   }
 
   private loadUsername() {
     const username = localStorage.getItem('username'); 
     if (username) {
-      this.usernameSubject.next(username);
+      this.username = username; 
+      this.usernameSubject.next(username); 
     } else {
-      this.usernameSubject.next(null);
+      this.username = null;
+      this.usernameSubject.next(null); 
     }
   }
+
   // Метод для очистки сообщений
   clearMessages() {
-    this.messagesSubject.next([]);
+    this.messages = [];
+    this.messagesSubject.next(this.messages); 
     localStorage.removeItem('messages'); 
   }
 }

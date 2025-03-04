@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { ChatService, Message } from './chat.service';
 import { MessageListComponent } from './message-list/message-list.component';
 import { MessageFormComponent } from './message-form/message-form.component';
@@ -16,15 +16,17 @@ export class AppComponent {
   messages: Message[] = [];
   username: string | null = null;
 
-  constructor(private chatService: ChatService) {
+  constructor(private chatService: ChatService, private cdr: ChangeDetectorRef) {
     // Подписываемся на изменения сообщений
     this.chatService.messages$.subscribe(messages => {
       this.messages = messages;
+      this.cdr.detectChanges(); //обновляем интерфейс
     });
 
     // Подписываемся на изменения имени пользователя
     this.chatService.username$.subscribe(username => {
       this.username = username;
+      this.cdr.detectChanges(); 
     });
   }
 
